@@ -46,6 +46,10 @@ bill.acts
  => ["Jerusalem Embassy Relocation Act", "subsection (b) of this section", "section 7 of the Jerusalem Embassy Act of 1995", "subsection (a)"]
 ```
 
+## Tests
+
+To run the tests, it's `rake test`. Catobills uses MiniTest.
+
 ## Contributing
 
 1. Fork it
