@@ -1,7 +1,7 @@
 module Catobills
   class Bill
     
-    attr_reader :bill_number, :bill_body, :version, :congress, :bill_type, :federal_bodies
+    attr_reader :bill_number, :bill_body, :version, :congress, :bill_type, :federal_bodies, :acts
 
     def initialize(params={})
       params.each_pair do |k,v|
@@ -25,13 +25,19 @@ module Catobills
       :version => bill['billversion'],
       :congress => bill['congress'],
       :bill_type => bill['billtype'],
-      :federal_bodies => self.populate_federal_bodies(bill_body))
+      :federal_bodies => self.populate_federal_bodies(bill_body),
+      :acts => self.populate_acts(bill_body))
+    end
+    
+    def self.populate_acts(bill_body)
+      results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'act'}
+      results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.uniq.compact
     end
     
     # collects mentions of federal bodies, removing 'Congress', leadership offices, 'Commission', 'Board' and offices within agencies.
     def self.populate_federal_bodies(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'federal-body'}
-      results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.uniq.compact.reject{|x| ['Commission', 'Board'].include?(x)}
+      results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.uniq.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department'].include?(x)}
     end
   end
 end
