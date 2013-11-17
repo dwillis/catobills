@@ -29,11 +29,12 @@ class TestBill < MiniTest::Test
   end
   
   def test_that_federal_bodies_were_created
-    assert_equal ["Secretary of the Interior", "National Park System", "National Park Service"], @bill.federal_bodies
+    h = {"Secretary of the Interior"=>1, "National Park System"=>1, "National Park Service"=>1}
+    assert_equal h, @bill.federal_bodies
   end
   
-  def test_that_acts_were_created
-    assert_equal ["paragraph (3)", "subsection (a)"], @bill.acts
+  def test_that_no_acts_were_created
+    assert_equal Hash.new, @bill.acts
   end
   
   

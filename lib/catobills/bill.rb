@@ -31,13 +31,21 @@ module Catobills
     
     def self.populate_acts(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'act'}
-      results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.uniq.compact
+      array_count(results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|ref| ref[0] != ref[0].upcase})
     end
     
     # collects mentions of federal bodies, removing 'Congress', leadership offices, 'Commission', 'Board' and offices within agencies.
     def self.populate_federal_bodies(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'federal-body'}
-      results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.uniq.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department'].include?(x)}
+      array_count(results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department'].include?(x)})
+    end
+    
+    def self.array_count(array)
+      h = Hash.new(0)
+      array.each do |v|
+        h[v] += 1
+      end
+      h
     end
   end
 end
