@@ -31,13 +31,13 @@ module Catobills
     
     def self.populate_acts(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'act'}
-      array_count(results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|ref| ref[0] != ref[0].upcase})
+      array_count(results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|ref| ref[0] != ref[0].upcase}).reject{|ref| ref[0] == '('}.reject{|ref| ['Section', 'section', 'chapter', 'subsection'].any? {|s| ref.include?(s)}}
     end
     
     # collects mentions of federal bodies, removing 'Congress', leadership offices, 'Commission', 'Board' and offices within agencies.
     def self.populate_federal_bodies(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'federal-body'}
-      array_count(results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department'].include?(x)})
+      array_count(results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department', 'Administrator', 'Administration', 'House', 'Senate', 'Director', 'Advisory Committee'].include?(x)})
     end
     
     def self.array_count(array)
