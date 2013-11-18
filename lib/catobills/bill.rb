@@ -4,7 +4,7 @@ module Catobills
     attr_reader :bill_number, :bill_body, :version, :congress, :bill_type, :federal_bodies, :acts
 
     FILTER_LIST = ['Commission', 'Board', 'Secretary', 'Department', 'Administrator', 'Administration', 'House', 'Senate', 'Director', 'Advisory Committee', 'Task Force', 
-      "Secretary's", "Under Secretary", "Administrator's", "Board’s", "Service", "Department of State's", "CSCC’s", "Bureau", "Inspector General of the Office", "Office",
+      "Secretary's", "Under Secretary", "Administrator's", "Board's", "Service", "Department of State's", "CSCC's", "Bureau", "Inspector General of the Office", "Office",
       "Commissioner", "Assistant Secretary"]
 
     def initialize(params={})
