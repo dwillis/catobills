@@ -3,6 +3,10 @@ module Catobills
     
     attr_reader :bill_number, :bill_body, :version, :congress, :bill_type, :federal_bodies, :acts
 
+    FILTER_LIST = ['Commission', 'Board', 'Secretary', 'Department', 'Administrator', 'Administration', 'House', 'Senate', 'Director', 'Advisory Committee', 'Task Force', 
+      "Secretary's", "Under Secretary", "Administrator's", "Board’s", "Service", "Department of State's", "CSCC’s", "Bureau", "Inspector General of the Office", "Office",
+      "Commissioner", "Assistant Secretary"]
+
     def initialize(params={})
       params.each_pair do |k,v|
         instance_variable_set("@#{k}", v)
@@ -37,7 +41,7 @@ module Catobills
     # collects mentions of federal bodies, removing 'Congress', leadership offices, 'Commission', 'Board' and offices within agencies.
     def self.populate_federal_bodies(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'federal-body'}
-      array_count(results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|x| ['Commission', 'Board', 'Secretary', 'Department', 'Administrator', 'Administration', 'House', 'Senate', 'Director', 'Advisory Committee', 'Task Force', "Secretary's", "Under Secretary", "Administrator's"].include?(x)})
+      array_count(results.flatten.reject{|ref| ref['entity-id'] == "0001"}.reject{|ref| ref['entity-parent-id'] == '0050'}.reject{|ref| ref['entity-parent-id'] == '0010'}.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|x| FILTER_LIST.include?(x)})
     end
     
     def self.array_count(array)
