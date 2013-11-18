@@ -20,13 +20,16 @@ module Catobills
       response = HTTParty.get(url)
       bill = Oj.load(response.body)
       bill_body = Ox.load(bill['billbody'])
-      self.new(:bill_number => bill['billnumber'],
-      :bill_body => bill_body,
-      :version => bill['billversion'],
-      :congress => bill['congress'],
-      :bill_type => bill['billtype'],
-      :federal_bodies => self.populate_federal_bodies(bill_body),
-      :acts => self.populate_acts(bill_body))
+
+      self.new(
+        bill_number:    bill['billnumber'],
+        bill_body:      bill_body,
+        version:        bill['billversion'],
+        congress:       bill['congress'],
+        bill_type:      bill['billtype'],
+        federal_bodies: self.populate_federal_bodies(bill_body),
+        acts:           self.populate_acts(bill_body)
+      )
     end
     
     def self.populate_acts(bill_body)
