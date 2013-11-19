@@ -5,7 +5,7 @@ module Catobills
 
     FILTER_LIST = ['Commission', 'Board', 'Secretary', 'Department', 'Administrator', 'Administration', 'House', 'Senate', 'Director', 'Advisory Committee', 'Task Force', 
       "Secretary's", "Under Secretary", "Administrator's", "Board's", "Service", "Department of State's", "CSCC's", "Bureau", "Inspector General of the Office", "Office",
-      "Commissioner", "Assistant Secretary"]
+      "Commissioner", "Assistant Secretary", "Comptroller General"]
 
     def initialize(params={})
       params.each_pair do |k,v|
