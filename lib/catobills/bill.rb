@@ -38,7 +38,7 @@ module Catobills
     
     def self.populate_acts(bill_body)
       results = bill_body.locate('legis-body/*/cato:entity-ref').select{|ref| ref['entity-type'] == 'act'}
-      array_count(results.map{|ref| ref.text.gsub(/\s+/, " ").strip}.compact.reject{|ref| ref[0] != ref[0].upcase}).reject{|ref| ref[0] == '('}.reject{|ref| ['Section', 'section', 'chapter', 'subsection'].any? {|s| ref.include?(s)}}
+      array_count(results.map{|ref| ref[:value].gsub(/\s+/, " ").strip.split('/').first}.compact.reject{|ref| ref[0] != ref[0].upcase}).reject{|ref| ref[0] == '('}.reject{|ref| ['Section', 'section', 'chapter', 'subsection'].any? {|s| ref.include?(s)}}
     end
     
     # collects mentions of federal bodies, removing 'Congress', leadership offices, 'Commission', 'Board' and offices within agencies.

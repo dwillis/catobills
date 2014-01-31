@@ -10,14 +10,10 @@ module Catobills
     end
 
     def self.load
-      f = File.open('federal-bodies.json', 'w')
-      results = []
-      bodies = Ox.load(open("federal-bodies.xml").read)
-      bodies.locate('entity').each do |entity|
-        abbrev = entity.nodes.detect{|n| n.value == 'abbr'} ? entity.nodes.detect{|n| n.value == 'abbr'}.text : nil
-        results << {:id => entity.id, :name => entity.nodes[0].nodes[0], :abbrev => abbrev}
-      end
-      f.write(pp results.to_json)
+      url = "http://dwillis.github.io/catobills/federal-bodies.json"
+      response = HTTParty.get(url)
+      bodies = Oj.load(response.body)
+      bodies.map{|b| self.new( id: b['id'], name: b['name'], abbrev: b['abbrev'])}
     end
 
   end
